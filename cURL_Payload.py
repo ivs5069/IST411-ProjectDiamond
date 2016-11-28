@@ -7,7 +7,7 @@ website = "https://github.com/" #Default value for testing so I don't have to ke
 web_Name = website[website.index('/') + 2: website.index('.'):]  #Get the name of the website
 
 #Create the string for the cURL command.Saves the cURL output to the websites name with file extention .curl"
-website_inp = "curl -I " + website + "> " + web_Name + ".curl"
+website_inp = "curl -I " + website + "> " + web_Name + "_curl.txt"
 
 #run the command
 os.system(website_inp)
@@ -16,7 +16,7 @@ os.system(website_inp)
 new_Dict = {}
 
 #Open the .curl file and iterate through it
-with open(web_Name + ".curl") as f:
+with open(web_Name + "_curl.txt") as f:
 	for line in f:
 		#If the line contains the : character, add it to the dictionary.
 		if(':' in line):
