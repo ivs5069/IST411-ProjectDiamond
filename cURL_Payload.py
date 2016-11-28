@@ -1,8 +1,8 @@
-import os, json
+import os, json, time
 
 #Get the website that the user wants to use
-website = input("Please input what website you want header information from: ")
-#website = "https://github.com/" #Default value for testing so I don't have to keep putting in a website
+#website = input("Please input what website you want header information from: ")
+website = "https://github.com/" #Default value for testing so I don't have to keep putting in a website
 
 web_Name = website[website.index('/') + 2: website.index('.'):]  #Get the name of the website
 
@@ -21,6 +21,10 @@ with open(web_Name + ".curl") as f:
 		#If the line contains the : character, add it to the dictionary.
 		if(':' in line):
 			new_Dict[line[0:line.index(':'):]] = line[line.index(':') + 2::]
+
+#Add the date/time and subsystem diamond information
+new_Dict["Diamond Time"] = time.time()
+new_Dict["Diamond System"] = "cURL Payload"
 
 #Create a new file to hold the json file, write to the file the Json file, and then close the file
 f = open(web_Name + ".json", 'w')
