@@ -7,7 +7,7 @@
 
 '''
 
-import os, json, time
+import os, json, time, uuid
 
 def file_Error():
 	print("File Error. Make sure you have permissions to write to this folder or have disk space to write to.")
@@ -57,6 +57,9 @@ except:
 new_Dict["Website Name"] = web_Name
 new_Dict["Diamond Time"] = time.time()
 new_Dict["Diamond System"] = "cURL Payload"
+
+#Add a unique ID for the message
+new_Dict["Diamond Message UUID"] = uuid.uuid4().hex
 
 #Create a new file to hold the json file, write to the file the Json file, and then close the file
 try:
