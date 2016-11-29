@@ -2,14 +2,15 @@
 	cURL_Payload.py		
 	Author: Ion Sirotkin
 	Class: IST 411
-	Last Revision Date: 11/28/2016
+	Last Revision Date: 11/29/2016
+	Project: Diamond
 	Purpose: Recieves a website inputed in by a user. Returns a JSON object of the Header information of the website.
 		 If the JSON file is successfully returned, this script will send out the JSON file through RabbitMQ to
 		 get to the first Diamond system. Also puts the whole JSON file in the logs in MongoDB
 
 '''
 
-import os, json, time, uuid #, pika
+import os, json, time, uuid, pika
 from pymongo import MongoClient
 
 def file_Error():
@@ -17,8 +18,8 @@ def file_Error():
 	exit()
 
 #Get the website that the user wants to use
-#website = input("Please input what website you want header information from: ")
-website = "https://github.com/" #Default value for testing so I don't have to keep putting in a website
+website = raw_input("Please input what website you want header information from: ")
+#website = "https://github.com/" #Default value for testing so I don't have to keep putting in a website
 
 #If the url conatains www
 if("www" in website):
@@ -64,6 +65,9 @@ new_Dict["Diamond System"] = "cURL Payload"
 #Add a unique ID for the message
 new_Dict["Diamond Message UUID"] = uuid.uuid4().hex
 
+#Add a times looped so the message doesn't infinitly go through the system
+new_Dict["Diamond Times Looped"] = 0
+
 #Create a new file to hold the json file, write to the file the Json file, and then close the file
 try:
 	f = open(web_Name + ".json", 'w')
@@ -74,20 +78,19 @@ json_Object = json.dumps(new_Dict)
 f.write(json_Object)
 f.close()
 
+#Commented out since MongoDB is down
+'''
 #Set up the database connection and then add the json payload to the database
 client = MongoClient().dbDiamond.collection.insert(json.loads(json_Object))
-
-
-#Commented out RabbitMQ code until RabbitMQ starts working
 '''
+
 #Send the JSON object to the first diamond using RabbitMQ
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 
-channel.queue_declare(queue = "DiamondIon")
+channel.queue_declare(queue = 'Diamond')
 
-channel.basic_publish(exchange='', routing_key = queue_sent, body=json_Object)
+channel.basic_publish(exchange='', routing_key = 'Diamond', body=json_Object)
 print("JSON File sent on RabbitMQ")
-'''
 
 
