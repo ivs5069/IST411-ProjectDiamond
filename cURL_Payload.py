@@ -10,6 +10,7 @@
 '''
 
 import os, json, time, uuid #, pika
+from pymongo import MongoClient
 
 def file_Error():
 	print("File Error. Make sure you have permissions to write to this folder or have disk space to write to.")
@@ -72,6 +73,9 @@ except:
 json_Object = json.dumps(new_Dict)
 f.write(json_Object)
 f.close()
+
+#Set up the database connection and then add the json payload to the database
+client = MongoClient().dbDiamond.collection.insert(json.loads(json_Object))
 
 
 #Commented out RabbitMQ code until RabbitMQ starts working
