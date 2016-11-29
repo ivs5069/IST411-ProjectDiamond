@@ -3,11 +3,13 @@
 	Author: Ion Sirotkin
 	Class: IST 411
 	Last Revision Date: 11/28/2016
-	Purpose: Recieves a website inputed in by a user. Returns a JSON object of the Header information of the website
+	Purpose: Recieves a website inputed in by a user. Returns a JSON object of the Header information of the website.
+		 If the JSON file is successfully returned, this script will send out the JSON file through RabbitMQ to
+		 get to the first Diamond system. Also puts the whole JSON file in the logs in MongoDB
 
 '''
 
-import os, json, time, uuid
+import os, json, time, uuid #, pika
 
 def file_Error():
 	print("File Error. Make sure you have permissions to write to this folder or have disk space to write to.")
@@ -67,6 +69,21 @@ try:
 except:
 	file_Error
 
-f.write(json.dumps(new_Dict))
+json_Object = json.dumps(new_Dict)
+f.write(json_Object)
 f.close()
+
+
+#Commented out RabbitMQ code until RabbitMQ starts working
+'''
+#Send the JSON object to the first diamond using RabbitMQ
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+channel.queue_declare(queue = "DiamondIon")
+
+channel.basic_publish(exchange='', routing_key = queue_sent, body=json_Object)
+print("JSON File sent on RabbitMQ")
+'''
+
 
