@@ -8,7 +8,7 @@
 		 Socket communications, using a SSL connection.
 '''
 
-import json, time, pika, socket
+import json, time, pika, socket, ssl
 from pymongo import MongoClient
 
 #Define the connection and channel for the RabbitMQ Communication. Set to LocalHost
@@ -43,13 +43,19 @@ def call_Back(channel, method, properties, body):
 	mongo_client.default.insert(message)
 	mongo_client.socketDiamond.insert(message)
 
-	socket_client = socket.socket()
+	#Define the socket client, host, and port
+	socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+	#Require cert from server for ssl
+	ssl_socket = ssl.wrap_socket(socket_client, ca_certs = "server.crt", cert_reqs = ssl.CERT_REQUIRED)
+	
 
 	host = 'localhost'
 	port = 40028
 
-	socket_client.connect((host, port))
-	socket_client.send(json_Message)
+	#Connect to the socket and send the payload
+	ssl_socket.connect((host,port))
+	ssl_socket.write(json_Message)
 	
 	
 	
