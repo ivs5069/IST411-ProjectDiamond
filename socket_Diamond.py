@@ -9,6 +9,7 @@
 '''
 
 import json, time, pika, socket
+from pymongo import MongoClient
 
 #Define the connection and channel for the RabbitMQ Communication. Set to LocalHost
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -19,6 +20,7 @@ channel.queue_declare('Diamond')
 
 #Method to run when a message is recieved
 def call_Back(channel, method, properties, body):
+	print("Incoming")
 	#Convert the JSON file into a dictionary
 	message = json.loads(body)
 
@@ -36,6 +38,11 @@ def call_Back(channel, method, properties, body):
 	#Send the message over Socket Communications
 	json_Message = json.dumps(message)
 	
+	#Setup the database connection and then add the message to the database
+	mongo_client = MongoClient().dbDiamond
+	mongo_client.default.insert(message)
+	mongo_client.socketDiamond.insert(message)
+
 	socket_client = socket.socket()
 
 	host = 'localhost'

@@ -78,11 +78,10 @@ json_Object = json.dumps(new_Dict)
 f.write(json_Object)
 f.close()
 
-#Commented out since MongoDB is down
-'''
 #Set up the database connection and then add the json payload to the database
-client = MongoClient().dbDiamond.collection.insert(json.loads(json_Object))
-'''
+client = MongoClient().dbDiamond
+client.default.insert(json.loads(json_Object))
+client.cURL.insert(json.loads(json_Object))
 
 #Send the JSON object to the first diamond using RabbitMQ
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
