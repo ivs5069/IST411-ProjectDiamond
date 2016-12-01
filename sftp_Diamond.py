@@ -1,4 +1,4 @@
-import socket, ssl
+import socket, ssl, json, hashlib
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(('localhost', 41028))
@@ -11,7 +11,29 @@ while True:
 	
 		data = connection_stream.read()
 		if(data > 0):
-			print(data)
-	except:
+			message = json.loads(data)
+			print('Pass')
+			message["Diamond System"] = "SFTP Diamond"
+			message["Diamond Time"] = time.time()
+
+			print(" [x] Recieved %r JSON header payload" % str(message["Website Name"]))
+
+			unhashed_message = json.dumps(message)
+
+			hashed_message = {}
+
+			hashed_message["Message"] = unhashed_message
+			
+			hashed_message["Checksum"] = hashlib.md5(unhashed_message.encode()).hexdigest()
+			
+			hashed_json = json.dumps(hashed_message)
+
+
+	#except:
+		#serversocket.close()
+		#exit()
+
+	except Exception, err:
 		serversocket.close()
+		print err
 		exit()
