@@ -51,12 +51,13 @@ def call_Back(channel, method, properties, body):
 	
 
 	host = 'localhost'
-	port = 40028
+	port = 41028
 
 	#Connect to the socket and send the payload
 	ssl_socket.connect((host,port))
 	ssl_socket.write(json_Message)
-	
+
+	ssl_socket.close()	
 	
 	
 #Consume data coming in
