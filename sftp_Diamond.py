@@ -1,4 +1,4 @@
-import socket, ssl, json, hashlib
+import socket, ssl, json, hashlib, time
 
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(('localhost', 41028))
@@ -9,10 +9,9 @@ while True:
 		connection, address = serversocket.accept()
 		connection_stream = ssl.wrap_socket(connection, server_side = True, certfile = "server.crt", keyfile = "server.key")
 	
-		data = connection_stream.read()
+		data = connection_stream.read(2048)
 		if(data > 0):
 			message = json.loads(data)
-			print('Pass')
 			message["Diamond System"] = "SFTP Diamond"
 			message["Diamond Time"] = time.time()
 
