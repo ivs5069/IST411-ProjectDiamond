@@ -9,12 +9,20 @@
 
 '''
 
-import socket, ssl, json, hashlib, time
+import socket, ssl, json, hashlib, time, pysftp
 
 #Create the socket for the server, set the address and port number, and set max connections to 5
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serversocket.bind(('localhost', 41028))
 serversocket.listen(5)
+
+cnopts = pysftp.CnOpts()
+
+cnopts.hostkeys = None #Disable host key checking
+
+cinfo = {'cnopts':cnopts, 'host':'oz-ist-linux.abington.psu.edu', 'username':'ftpuser', 'password':'test1234', 'port':109}
+
+
 
 while True:
 	try:
@@ -31,6 +39,8 @@ while True:
 			#Update the Message information
 			message["Diamond System"] = "SFTP Diamond"
 			message["Diamond Time"] = time.time()
+
+			file_name = message["Website Name"] + "_ion.json"
 
 			#Print out to the user that a message was recieved
 			print(" [x] Recieved %r JSON header payload" % str(message["Website Name"]))
@@ -49,7 +59,18 @@ while True:
 			
 			#Parse the JSON message with the Checksum in JSON
 			hashed_json = json.dumps(hashed_message)
-
+			
+			print hashed_json			
+			#Send the payload over sftp
+			with pysftp.Connection(**cinfo) as sftp:
+				try:
+					f = open(file_name, 'w')
+					f.write(hashed_json)
+					f.close()
+					sftp.cd('/home/ftpuser')
+					sftp.put(file_name)
+				except:
+					print "File transfer issue"
 
 	#except:
 		#serversocket.close()
