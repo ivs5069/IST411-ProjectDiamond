@@ -7,8 +7,15 @@
 		 over RabbitMQ encrypting the message using AES encryption
 '''
 
-import Pyro4, json, time, pika
+import Pyro4, json, time, pika, os
+from Crypto.Cipher import AES
 
+
+#Clear the terminal when the server starts up
+os.system('clear')
+
+
+print('Pyro4 waiting for JSON Payload')
 #Class to hold the pyro object
 class Warehouse(object):
 	def __init__(self):
@@ -19,7 +26,7 @@ class Warehouse(object):
 		#Load the message
 		message = json.loads(recieved)
 
-		print "Recieved %r JSON header payload" % str(message["Website Name"])
+		print "[x] Recieved %r JSON header payload" % str(message["Website Name"])
 
 		#Update the message information
 		message["Diamond System"] = "Rabbit Diamond"
@@ -28,11 +35,19 @@ class Warehouse(object):
 		#Put the message back into json
 		json_message = json.dumps(message)
 
+		enc = AES.new('DiamondKey50213', AES.MODE_CBC, 'This is an IV456')
+		
+		length_message_to16 = 16 - (len(json_message) % 16)
+		for i in range(length_message_to16):
+			json_message += ' '
+
+		cipher_text = enc.encrypt(json_message)	
+
 		#Send the message over RabbitMQ using queue Diamond
 		connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 		channel = connection.channel()
 		channel.queue_declare(queue = 'Diamond')
-		channel.basic_publish(exchange='', routing_key = 'Diamond', body = json_message)
+		channel.basic_publish(exchange='', routing_key = 'Diamond', body = cipher_text)
 
 		#close the connection
 		connection.close()

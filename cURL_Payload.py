@@ -12,6 +12,7 @@
 
 import os, json, time, uuid, pika
 from pymongo import MongoClient
+from Crypto.Cipher import AES
 
 def file_Error():
 	print("File Error. Make sure you have permissions to write to this folder or have disk space to write to.")
@@ -83,13 +84,17 @@ client = MongoClient().dbDiamond
 client.default.insert(json.loads(json_Object))
 client.cURL.insert(json.loads(json_Object))
 
+
+enc = AES.new('DiamondKey50213', AES.MODE_CBC, 'This is an IV456')
+cypher_text = enc.encrypt(json_Object)
+
 #Send the JSON object to the first diamond using RabbitMQ
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 
 channel.queue_declare(queue = 'Diamond')
 
-channel.basic_publish(exchange='', routing_key = 'Diamond', body=json_Object)
+channel.basic_publish(exchange='', routing_key = 'Diamond', body=cypher_text)
 print("JSON File sent on RabbitMQ")
 
 connection.close()

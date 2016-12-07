@@ -7,7 +7,10 @@
 		 sends the message over Pyro. 
 '''
 
-import os, time, json, hashlib, Pyro4
+import os, time, json, hashlib, Pyro4, os
+
+#Clear the terminal when the server goes up
+os.system('clear')
 
 #Locate the URI of the pyro server
 with Pyro4.locateNS() as ns:
@@ -15,6 +18,8 @@ with Pyro4.locateNS() as ns:
 		uri = y
 warehouse = Pyro4.Proxy(uri)
 
+
+print("SFTP waiting for JSON Payload")
 #create a message object to hold the Pyro Objects to send
 class Message(object):
 	def __init__(self, message):
@@ -55,7 +60,7 @@ while True:
 			message["Diamond Time"] = time.time()
 			
 			#Print out that a message got recieved	
-			print "Recieved %r JSON header payload" % str(message["Website Name"])
+			print "[x] Recieved %r JSON header payload" % str(message["Website Name"])
 			
 			#Send the message over Pyro
 			messageObject = Message(json.dumps(message))

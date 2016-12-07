@@ -9,7 +9,10 @@
 
 '''
 
-import socket, ssl, json, hashlib, time, pysftp
+import socket, ssl, json, hashlib, time, pysftp, os
+
+#Clear the screen when the server goes up
+os.system('clear')
 
 #Create the socket for the server, set the address and port number, and set max connections to 5
 serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -23,7 +26,7 @@ cnopts.hostkeys = None #Disable host key checking
 cinfo = {'cnopts':cnopts, 'host':'oz-ist-linux.abington.psu.edu', 'username':'ftpuser', 'password':'test1234', 'port':109}
 
 
-
+print 'Socket waiting for JSON Payload'
 while True:
 	try:
 		#Listen for any messages sent through the socket

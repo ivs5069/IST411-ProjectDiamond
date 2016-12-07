@@ -8,8 +8,12 @@
 		 Socket communications, using a SSL connection.
 '''
 
-import json, time, pika, socket, ssl
+import json, time, pika, socket, ssl, os,
+from Crypto.Cipher import AES
 from pymongo import MongoClient
+
+#Clear the screen when the server starts up
+os.system('clear')
 
 #Define the connection and channel for the RabbitMQ Communication. Set to LocalHost
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -20,9 +24,12 @@ channel.queue_declare('Diamond')
 
 #Method to run when a message is recieved
 def call_Back(channel, method, properties, body):
-	print("Incoming")
+	
+	enc = AES.new('DiamondKey50213', AES.MODE_CBC, 'This is an IV456')
+		
 	#Convert the JSON file into a dictionary
-	message = json.loads(body)
+	
+	message = json.loads(enc.decrypt(body))
 
 	#Incriment the amount of times the message went through the Diamond
 	message["Diamond Times Looped"] += 1
@@ -67,6 +74,6 @@ def call_Back(channel, method, properties, body):
 #Consume data coming in
 channel.basic_consume(call_Back, queue = 'Diamond', no_ack = True)
 
-print("Waiting for JSON Payload")
+print("RabbitMQ waiting for JSON Payload")
 
 channel.start_consuming()
