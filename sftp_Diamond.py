@@ -60,7 +60,6 @@ while True:
 			#Parse the JSON message with the Checksum in JSON
 			hashed_json = json.dumps(hashed_message)
 			
-			print hashed_json			
 			#Send the payload over sftp
 			with pysftp.Connection(**cinfo) as sftp:
 				try:
@@ -69,12 +68,9 @@ while True:
 					f.close()
 					sftp.cd('/home/ftpuser')
 					sftp.put(file_name)
+					sftp.close()
 				except:
 					print "File transfer issue"
-
-	#except:
-		#serversocket.close()
-		#exit()
 
 	except Exception, err:
 		serversocket.close()

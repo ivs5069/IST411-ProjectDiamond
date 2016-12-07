@@ -92,4 +92,4 @@ channel.queue_declare(queue = 'Diamond')
 channel.basic_publish(exchange='', routing_key = 'Diamond', body=json_Object)
 print("JSON File sent on RabbitMQ")
 
-
+connection.close()

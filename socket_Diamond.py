@@ -27,37 +27,41 @@ def call_Back(channel, method, properties, body):
 	#Incriment the amount of times the message went through the Diamond
 	message["Diamond Times Looped"] += 1
 	
-	#Update the Message information about what Diamond System it is on and the system time
-	message["Diamond System"] = "Socket Diamond"
-	message["Diamond Time"] = time.time()
+	if(message["Diamond Times Looped"] <= 3):	
+		#Update the Message information about what Diamond System it is on and the system time
+		message["Diamond System"] = "Socket Diamond"
+		message["Diamond Time"] = time.time()
 
-	#Print out that a message has been recieved	
-	print(" [x] Recieved %r JSON header payload" % str(message["Website Name"]))
+		#Print out that a message has been recieved	
+		print(" [x] Recieved %r JSON header payload" % str(message["Website Name"]))
 
-	
-	#Send the message over Socket Communications
-	json_Message = json.dumps(message)
-	
-	#Setup the database connection and then add the message to the database
-	mongo_client = MongoClient().dbDiamond
-	mongo_client.default.insert(message)
-	mongo_client.socketDiamond.insert(message)
+		
+		#Send the message over Socket Communications
+		json_Message = json.dumps(message)
+		
+		#Setup the database connection and then add the message to the database
+		mongo_client = MongoClient().dbDiamond
+		mongo_client.default.insert(message)
+		mongo_client.socketDiamond.insert(message)
 
-	#Define the socket client, host, and port
-	socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		#Define the socket client, host, and port
+		socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-	#Require cert from server for ssl
-	ssl_socket = ssl.wrap_socket(socket_client, ca_certs = "server.crt", cert_reqs = ssl.CERT_REQUIRED)
-	
+		#Require cert from server for ssl
+		ssl_socket = ssl.wrap_socket(socket_client, ca_certs = "server.crt", cert_reqs = ssl.CERT_REQUIRED)
+		
 
-	host = 'localhost'
-	port = 41028
+		host = 'localhost'
+		port = 41028
 
-	#Connect to the socket and send the payload
-	ssl_socket.connect((host,port))
-	ssl_socket.write(json_Message)
+		#Connect to the socket and send the payload
+		ssl_socket.connect((host,port))
+		ssl_socket.write(json_Message)
 
-	ssl_socket.close()	
+		ssl_socket.close()
+
+	else:
+		print("%r JSON header payload transmission terminated" % str(message["Website Name"]))	
 	
 	
 #Consume data coming in
