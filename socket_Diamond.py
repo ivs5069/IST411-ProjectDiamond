@@ -25,7 +25,7 @@ channel.queue_declare('Diamond')
 #Method to run when a message is recieved
 def call_Back(channel, method, properties, body):
 	
-	enc = AES.new('DiamondKey50213', AES.MODE_CBC, 'This is an IV456')
+	enc = AES.new('DiamondKey502134', AES.MODE_CBC, 'This is an IV456')
 		
 	#Convert the JSON file into a dictionary
 	

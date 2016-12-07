@@ -35,7 +35,7 @@ class Warehouse(object):
 		#Put the message back into json
 		json_message = json.dumps(message)
 
-		enc = AES.new('DiamondKey50213', AES.MODE_CBC, 'This is an IV456')
+		enc = AES.new('DiamondKey502134', AES.MODE_CBC, 'This is an IV456')
 		
 		length_message_to16 = 16 - (len(json_message) % 16)
 		for i in range(length_message_to16):

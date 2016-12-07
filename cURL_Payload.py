@@ -84,8 +84,13 @@ client = MongoClient().dbDiamond
 client.default.insert(json.loads(json_Object))
 client.cURL.insert(json.loads(json_Object))
 
+lengthMessage = 16 - (len(json_Object) % 16)
+for i in range(lengthMessage):
+	json_Object += ' '
 
-enc = AES.new('DiamondKey50213', AES.MODE_CBC, 'This is an IV456')
+print len(json_Object) % 16
+
+enc = AES.new('DiamondKey502134', AES.MODE_CBC, 'This is an IV456')
 cypher_text = enc.encrypt(json_Object)
 
 #Send the JSON object to the first diamond using RabbitMQ
