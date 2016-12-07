@@ -8,7 +8,7 @@
 		 Socket communications, using a SSL connection.
 '''
 
-import json, time, pika, socket, ssl, os,
+import json, time, pika, socket, ssl, os
 from Crypto.Cipher import AES
 from pymongo import MongoClient
 
