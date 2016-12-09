@@ -9,6 +9,7 @@
 
 import Pyro4, json, time, pika, os
 from Crypto.Cipher import AES
+from pymongo import MongoClient
 
 
 #Clear the terminal when the server starts up
@@ -32,8 +33,19 @@ class Warehouse(object):
 		message["Diamond System"] = "Rabbit Diamond"
 		message["Diamond Time"] = time.time()
 
-		#Put the message back into json
 		json_message = json.dumps(message)
+
+      	        #Setup the database connection and then add the message to the database
+		try:
+			mongo_client = MongoClient().dbDiamond
+			mongo_client.default.insert(message)
+			mongo_client.socketDiamond.insert(message)
+			MongoClient().close()
+
+		except:
+			print 'Mongo error. Check if mongo is running.'
+
+
 
 		enc = AES.new('DiamondKey502134', AES.MODE_CBC, 'This is an IV456')
 		

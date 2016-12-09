@@ -10,6 +10,7 @@
 '''
 
 import socket, ssl, json, hashlib, time, pysftp, os
+from pymongo import MongoClient
 
 #Clear the screen when the server goes up
 os.system('clear')
@@ -62,7 +63,21 @@ while True:
 			
 			#Parse the JSON message with the Checksum in JSON
 			hashed_json = json.dumps(hashed_message)
-			
+		
+
+
+
+                        #Setup the database connection and then add the message to the database
+                        try:
+                                mongo_client = MongoClient().dbDiamond
+                                mongo_client.default.insert(message)
+                                mongo_client.sftp_Client.insert(message)
+                                MongoClient().close()
+
+                        except:
+                                print 'Mongo error. Check if mongo is running.'
+	
+
 			#Send the payload over sftp
 			with pysftp.Connection(**cinfo) as sftp:
 				try:
@@ -75,7 +90,9 @@ while True:
 				except:
 					print "File transfer issue"
 
+
 	except Exception, err:
 		serversocket.close()
 		print err
 		exit()
+

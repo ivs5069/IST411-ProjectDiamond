@@ -8,6 +8,7 @@
 '''
 
 import os, time, json, hashlib, Pyro4, os
+from pymongo import MongoClient
 
 #Clear the terminal when the server goes up
 os.system('clear')
@@ -30,6 +31,7 @@ class Message(object):
 		warehouse.store(self.message)
 
 while True:
+	time.sleep(1)
 	#Read the files that are in the SFTP folder
 	sftp_message = os.popen('ls ../../ftpuser | grep _ion.json').read()
 	#Create a list for the different files in the SFTP folder
@@ -61,9 +63,21 @@ while True:
 			
 			#Print out that a message got recieved	
 			print "[x] Recieved %r JSON header payload" % str(message["Website Name"])
-			
+		
+			json_message = json.dumps(message)	
+			#Setup the database connection and then add the message to the database
+			try:
+				mongo_client = MongoClient().dbDiamond
+				mongo_client.default.insert(message)
+				mongo_client.pyroClient.insert(message)
+				MongoClient().close()
+
+			except:
+	                        print 'Mongo error. Check if mongo is running.'
+
+
 			#Send the message over Pyro
-			messageObject = Message(json.dumps(message))
+			messageObject = Message(json_message)
 			messageObject.send()
 		else:
 			print("Checksum Error")

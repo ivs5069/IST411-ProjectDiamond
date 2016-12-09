@@ -47,9 +47,16 @@ def call_Back(channel, method, properties, body):
 		json_Message = json.dumps(message)
 		
 		#Setup the database connection and then add the message to the database
-		mongo_client = MongoClient().dbDiamond
-		mongo_client.default.insert(message)
-		mongo_client.socketDiamond.insert(message)
+		try:
+			mongo_client = MongoClient().dbDiamond
+			mongo_client.default.insert(message)
+			mongo_client.socketDiamond.insert(message)
+			MongoClient().close
+
+
+		except:
+			print 'Mongo error. Check if mongo is running.'
+
 
 		#Define the socket client, host, and port
 		socket_client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

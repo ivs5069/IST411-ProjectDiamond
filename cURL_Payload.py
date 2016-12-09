@@ -80,15 +80,17 @@ f.write(json_Object)
 f.close()
 
 #Set up the database connection and then add the json payload to the database
-client = MongoClient().dbDiamond
-client.default.insert(json.loads(json_Object))
-client.cURL.insert(json.loads(json_Object))
+try:
+	client = MongoClient().dbDiamond
+	client.default.insert(json.loads(json_Object))
+	client.cURL.insert(json.loads(json_Object))
+	MongoClient().close
+except:
+	print "MongoDB error"
 
 lengthMessage = 16 - (len(json_Object) % 16)
 for i in range(lengthMessage):
 	json_Object += ' '
-
-print len(json_Object) % 16
 
 enc = AES.new('DiamondKey502134', AES.MODE_CBC, 'This is an IV456')
 cypher_text = enc.encrypt(json_Object)
