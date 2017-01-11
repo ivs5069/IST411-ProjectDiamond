@@ -1,0 +1,23 @@
+HTTP/1.1 200 OK
+cache-control: no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+content-length: 302712
+content-type: text/html;charset=utf-8
+date: Sat, 10 Dec 2016 00:56:08 GMT
+expires: Tue, 31 Mar 1981 05:00:00 GMT
+last-modified: Sat, 10 Dec 2016 00:56:08 GMT
+pragma: no-cache
+server: tsa_b
+set-cookie: fm=0; Expires=Sat, 10 Dec 2016 00:55:58 UTC; Path=/; Domain=.twitter.com; Secure; HTTPOnly
+set-cookie: _twitter_sess=BAh7CSIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNo%250ASGFzaHsABjoKQHVzZWR7ADoPY3JlYXRlZF9hdGwrCBzhOuZYAToMY3NyZl9p%250AZCIlZmU4MmQwZGJmZjg5YmQ5MDUwNWM0N2MxYTVkMjE0N2M6B2lkIiU4Njk0%250AOTUzM2I2MTdhZjZmZjgxMzRiNzZiZGI3ODFkOA%253D%253D--7a6aa4c76e0655bc75d062cb3d7cab247033042a; Path=/; Domain=.twitter.com; Secure; HTTPOnly
+set-cookie: guest_id=v1%3A148133136821814098; Domain=.twitter.com; Path=/; Expires=Mon, 10-Dec-2018 00:56:08 UTC
+status: 200 OK
+strict-transport-security: max-age=631138519
+x-connection-hash: 437937598b955a5dfee0c9dd0605dbc5
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-response-time: 247
+x-transaction: 00deae66003d9ba1
+x-twitter-response-tags: BouncerCompliant
+x-ua-compatible: IE=edge,chrome=1
+x-xss-protection: 1; mode=block
+
